@@ -17,6 +17,14 @@ systemctl status strongswan-starter
 
 ## strongSwan VPN tunnel between 2 peers:
 
+## Setup IP forwarding:
+```sh
+sysctl net.ipv4.ip_forward=1
+sysctl net.ipv6.conf.all.forwarding=1
+net.ipv4.conf.all.accept_redirects = 1
+```
+Append this to `/etc/sysctl.conf` and run `sudo sysctl -p`
+
 ### Generate Private CA & Certificates:
 1. CA:
 ```sh
@@ -40,6 +48,7 @@ sudo cp server.key /etc/ipsec.d/private/
 
 [Note: The certificates are acting as some sort of PSK, and so must be shared between the two peers via a secure & trusted channel.]
 
+## Legacy (swanctl.conf is now recommended)
 3. Edit `/etc/ipsec.conf`:
 Server:
 ```conf
