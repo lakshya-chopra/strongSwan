@@ -19,6 +19,8 @@ sudo systemctl enable strongswan.service
 sudo apt install libcurl4-openssl-dev
 ```
 
+Note: if other services of strongSwan are running beside this (for example: starter or etc), then it will lead to errors, for example: [no socket implementation registered](https://github.com/strongswan/strongswan/discussions/2282
+
 ## Configuration:
 
 ### Certain parameters:
