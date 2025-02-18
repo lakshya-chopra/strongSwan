@@ -30,7 +30,7 @@ View logs:
 sudo journalctl -u strongswan --no-pager --since "5 minute ago"
 ```
 
-Note: if other services of strongSwan are running beside this (for example: starter or etc), then it will lead to errors, for example: [no socket implementation registered](https://github.com/strongswan/strongswan/discussions/2282
+Note: if other services of strongSwan are running beside this (for example: starter or etc), then it will lead to errors, for example: [no socket implementation registered](https://github.com/strongswan/strongswan/discussions/2282)
 
 ## Configuration:
 
@@ -52,8 +52,10 @@ Note: if other services of strongSwan are running beside this (for example: star
 - ![image](https://github.com/user-attachments/assets/135f7612-1743-478c-ba11-4cfa167dbf1f)
 
 - cacert: `"The certificates may use a relative path from the swanctl/x509ca directory or an absolute path"` For other certificates, `swanctl/x509` dir maybe used.
+  
 ![image](https://github.com/user-attachments/assets/f9b125bd-b617-45fb-a11f-15ff9e3d0b46)
 
+- Post Quantum PSKs - PPKs, can also be used. Add the key in the secrets subsection and set the ```ppk_required=yes```.
 ### 
 
 ## Client & Server config:
@@ -90,5 +92,5 @@ Example:
 ## References:
 
 - [Identity Parsing](https://docs.strongswan.org/docs/latest/config/identityParsing.html)
-
 - [Peer config issue](https://github.com/strongswan/strongswan/discussions/799)
+- [IKE Auth Code](https://github.com/strongswan/strongswan/blob/master/src/libcharon/sa/ikev2/tasks/ike_auth.c)
