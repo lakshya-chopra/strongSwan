@@ -39,7 +39,8 @@ sudo apt install libcurl4-openssl-dev
 - ![image](https://github.com/user-attachments/assets/135f7612-1743-478c-ba11-4cfa167dbf1f)
 
 - cacert: `"The certificates may use a relative path from the swanctl/x509ca directory or an absolute path"` For other certificates, `swanctl/x509` dir maybe used.
-  
+- ![Uploading image.png…]()
+
 ### 
 
 ## References:
