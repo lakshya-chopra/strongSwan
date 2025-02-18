@@ -10,13 +10,24 @@ StrongSwan:
 wget https://download.strongswan.org/strongswan-6.0.0.tar.bz2
 tar xjf strongswan-6.0.0.tar.bz2
 cd strongswan-6.0.0/
-./configure --prefix=/usr --sysconfdir=/etc --disable-defaults --enable-silent-rules --enable-charon --enable-systemd --enable-ikev2 --enable-vici --enable-swanctl --enable-nonce --enable-random --enable-drbg --enable-openssl --enable-curl  --enable-pem --enable-x509 --enable-constraints --enable-revocation --enable-pki --enable-pubkey --enable-socket-default --enable-kernel-netlink --enable-resolve --enable-eap-identity --enable-eap-md5 --enable-eap-dynamic --enable-eap-tls --enable-updown --enable-sha2 --enable-pkcs11 --enable-hmac --enable-gcm --enable-hmac --enable-ml
+
+./configure --prefix=/usr --sysconfdir=/etc --disable-defaults --enable-silent-rules --enable-charon --enable-systemd \
+--enable-ikev2 --enable-vici --enable-swanctl --enable-nonce --enable-random --enable-drbg --enable-openssl --enable-curl \
+--enable-pem --enable-x509 --enable-constraints --enable-revocation --enable-pki --enable-pubkey \
+--enable-socket-default --enable-kernel-netlink --enable-resolve --enable-eap-identity --enable-eap-md5 \
+--enable-eap-dynamic --enable-eap-tls --enable-updown --enable-sha2 \
+--enable-pkcs11 --enable-hmac --enable-gcm --enable-hmac --enable-ml
+
 make -j && sudo make install
 ```
 Start the service:
 ```sh
 sudo systemctl enable strongswan.service
-sudo apt install libcurl4-openssl-dev
+sudo systemctl start strongswan.service
+```
+View logs:
+```sh
+sudo journalctl -u strongswan --no-pager --since "5 minute ago"
 ```
 
 Note: if other services of strongSwan are running beside this (for example: starter or etc), then it will lead to errors, for example: [no socket implementation registered](https://github.com/strongswan/strongswan/discussions/2282
@@ -41,9 +52,43 @@ Note: if other services of strongSwan are running beside this (for example: star
 - ![image](https://github.com/user-attachments/assets/135f7612-1743-478c-ba11-4cfa167dbf1f)
 
 - cacert: `"The certificates may use a relative path from the swanctl/x509ca directory or an absolute path"` For other certificates, `swanctl/x509` dir maybe used.
-- ![Uploading image.png…]()
+![image](https://github.com/user-attachments/assets/f9b125bd-b617-45fb-a11f-15ff9e3d0b46)
 
 ### 
 
+## Client & Server config:
+1. For testing purposes, these are the example client & server configs you can use:
+[client](https://github.com/lakshya-chopra/strongSwan/blob/main/client/swanctl.conf)
+[server](https://github.com/lakshya-chopra/strongSwan/blob/main/server/swanctl.conf)
+
+2. Load the config files & certs:
+```sh
+swanctl --load-all
+swanctl --load-creds
+```
+
+3. Initiate IKE & Child IKE SA:
+```sh
+swanctl --initiate --ike conn
+swanctl --initiate --child child
+```
+
+4. View the logs via `journalctl`, or by configuring strongSwan to use a logging file.
+
+5. List the currently active SAs & conns:
+```sh
+swanctl --list-sas
+swanctl --list-conns
+```
+
+Example:
+
+![image](https://github.com/user-attachments/assets/ae362d29-b69d-4a41-9322-6da59ad760b5)
+
+
+
 ## References:
-[Identity Parsing](https://docs.strongswan.org/docs/latest/config/identityParsing.html)
+
+- [Identity Parsing](https://docs.strongswan.org/docs/latest/config/identityParsing.html)
+
+- [Peer config issue](https://github.com/strongswan/strongswan/discussions/799)
