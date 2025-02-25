@@ -1,4 +1,4 @@
-sudo apt install -y libcurl4-openssl-dev
+sudo apt install -y build-essential pkg-config gcc clang libssl-dev libgmp-dev libcurl4-openssl-dev
 sudo apt install -y libsystemd-dev bzip2
 
 wget https://download.strongswan.org/strongswan-6.0.0.tar.bz2
