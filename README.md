@@ -83,6 +83,11 @@ swanctl --list-sas
 swanctl --list-conns
 ```
 
+6. You may need to do a daemon-reload (at times) so that the configuration changes reflect in strongSwan:
+```sh
+sudo systemctl daemon-reload
+```
+
 Example:
 
 ![image](https://github.com/user-attachments/assets/ae362d29-b69d-4a41-9322-6da59ad760b5)
