@@ -51,7 +51,8 @@ Note: if other services of strongSwan are running beside this (for example: star
 
 - ![image](https://github.com/user-attachments/assets/135f7612-1743-478c-ba11-4cfa167dbf1f)
 
-- cacert: `"The certificates may use a relative path from the swanctl/x509ca directory or an absolute path"` For other certificates, `swanctl/x509` dir maybe used.
+- cacert: `"The certificates may use a relative path from the swanctl/x509ca directory or an absolute path"` For other certificates, `/etc/swanctl/x509` dir maybe used.
+- Private keys should be placed at `/etc/swanctl/private`.
   
 ![image](https://github.com/user-attachments/assets/f9b125bd-b617-45fb-a11f-15ff9e3d0b46)
 
