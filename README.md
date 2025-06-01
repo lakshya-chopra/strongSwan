@@ -1,16 +1,19 @@
 ## Installation
 
-Dependencies:
+### Dependencies
 ```sh
 sudo apt install libcurl4-openssl-dev libssl-dev
 sudo apt install libsystemd-dev pkg-config bzip2
 ```
-StrongSwan:
+### StrongSwan
 ```sh
 wget https://download.strongswan.org/strongswan-6.0.0.tar.bz2
 tar xjf strongswan-6.0.0.tar.bz2
 cd strongswan-6.0.0/
+```
 
+#### Configuring StrongSwan
+```
 ./configure --prefix=/usr --sysconfdir=/etc --disable-defaults --enable-silent-rules --enable-charon --enable-systemd \
 --enable-ikev2 --enable-vici --enable-swanctl --enable-nonce --enable-random --enable-drbg --enable-openssl --enable-curl \
 --enable-pem --enable-x509 --enable-constraints --enable-revocation --enable-pki --enable-pubkey \
@@ -20,21 +23,23 @@ cd strongswan-6.0.0/
 
 make -j && sudo make install
 ```
-Start the service:
+
+## Service setup
 ```sh
 sudo systemctl enable strongswan.service
 sudo systemctl start strongswan.service
 ```
-View logs:
+
+## Logs
 ```sh
 sudo journalctl -u strongswan --no-pager --since "5 minute ago"
 ```
 
 Note: if other services of strongSwan are running beside this (for example: starter or etc), then it will lead to errors, for example: [no socket implementation registered](https://github.com/strongswan/strongswan/discussions/2282)
 
-## Configuration:
+## Configuration
 
-### Certain parameters:
+### Certain parameters
 - local_ts:
 
   `"Comma-separated list of local traffic selectors to include in CHILD_SA. Each selector is a CIDR subnet definition, followed by an optional proto/port selector. The special value dynamic may be used instead of a subnet definition, which gets replaced by the tunnel outer address or the virtual IP if negotiated. This is the default."
@@ -59,7 +64,7 @@ Note: if other services of strongSwan are running beside this (for example: star
 - Post Quantum PSKs - PPKs, can also be used. Add the key in the secrets subsection and set the ```ppk_required=yes```.
 ### 
 
-## Client & Server config:
+## Client & Server config
 1. For testing purposes, these are the example client & server configs you can use:
 [client](https://github.com/lakshya-chopra/strongSwan/blob/main/client/swanctl.conf)
 [server](https://github.com/lakshya-chopra/strongSwan/blob/main/server/swanctl.conf)
