@@ -50,6 +50,7 @@ Note: if other services of strongSwan are running beside this (for example: star
   `"IKE identity to use for authentication round. When using certificate authentication. The IKE identity must be contained in the certificate, either as the subject DN or as a subjectAltName (the identity will default to the certificate’s subject DN if not specified)."
   `
 
+### From the official sources
 - ![image](https://github.com/user-attachments/assets/4c802dc0-cdff-4e18-9a3a-69745c803176)
 
 - ![image](https://github.com/user-attachments/assets/22fc49c5-ab01-4388-a9ed-21f7bc173e1a)
@@ -57,7 +58,7 @@ Note: if other services of strongSwan are running beside this (for example: star
 - ![image](https://github.com/user-attachments/assets/135f7612-1743-478c-ba11-4cfa167dbf1f)
 
 - cacert: `"The certificates may use a relative path from the swanctl/x509ca directory or an absolute path"` For other certificates, `/etc/swanctl/x509` dir maybe used.
-- Private keys should be placed at `/etc/swanctl/private`.
+- Private keys should be stored at `/etc/swanctl/private`.
   
 ![image](https://github.com/user-attachments/assets/f9b125bd-b617-45fb-a11f-15ff9e3d0b46)
 
@@ -99,8 +100,125 @@ Example:
 ![image](https://github.com/user-attachments/assets/ae362d29-b69d-4a41-9322-6da59ad760b5)
 
 
+## Advanced Logging
+strongSwan supports several levels of logging for IKE, ESP, APP, etc. Here's what the official documentation says: 
+| Level | Description                                                                 |
+|-------|-----------------------------------------------------------------------------|
+|-1     | Absolutely silent                                                           |
+| 0     | Very basic auditing logs (e.g., SA up/SA down)                              |
+| 1     | Generic control flow with errors, a good default to see what's going on     |
+| 2     | More detailed debugging control flow                                        |
+| 3     | Including RAW data dumps in hex                                             |
+| 4     | Also include sensitive material in dumps, e.g., keys                        |
 
-## References:
+### Add the levels
+
+```sh
+sudo vim /etc/strongswan.conf
+
+# this could also be used -- sudo vim /etc/strongswan.d/charon-logging.conf
+```
+> Earlier, strongSwan relied on multiple conf dirs including `charon` & `swanctl.conf`. However, in the newer versions, this has been largely replaced by `strongSwan.conf` which serves as the main configuration file, simplifying deployments.
+
+
+### Edit the charon section to specify logging levels for any of the sources mentioned below
+
+| Tag  | Description                                                     |
+|------|-----------------------------------------------------------------|
+| app  | Applications other than daemons                                |
+| asn  | Low-level encoding/decoding (ASN.1, X.509, etc.)               |
+| cfg  | Configuration management and plugins                           |
+| chd  | CHILD_SA / IPsec SA                                            |
+| dmn  | Main daemon setup/cleanup/signal handling                      |
+| enc  | Packet encoding/decoding, encryption/decryption operations     |
+| esp  | libipsec library messages                                      |
+| ike  | IKE_SA / ISAKMP SA                                             |
+| imc  | Integrity Measurement Collector                                |
+| imv  | Integrity Measurement Verifier                                 |
+| job  | Job queuing/processing and thread pool management              |
+| knl  | IPsec / Networking kernel interface                            |
+| lib  | libstrongswan library messages                                 |
+| mgr  | IKE_SA manager, handles synchronization for IKE_SA access      |
+| net  | IKE network communication                                      |
+| pts  | Platform Trust Service                                         |
+| tls  | libtls library messages                                        |
+| tnc  | Trusted Network Connect                                        |
+
+
+> Note: Add the levels under either filelog or syslog subsections (or both) depending on your requirement. From the official documentation, syslog could be more expensive if it flushes everything to the disk.
+
+As an example,
+```md
+charon {
+    filelog {
+
+            path =  /var/log/charon.log
+            append = yes # append to the file, instead of overwriting original data
+
+            # Default loglevel.
+            default = 4
+            ike = 4
+            esp = 4
+            app = 4
+            chd = 4
+            job = 4
+            net = 4
+            tls = 4
+            enc = 4
+            time_format = %b %e %T # add a formatted Timestamp before the formatted log messages
+        }
+
+    # Plugins
+    load = aes sha1 sha2 md5 des hmac gmp random nonce x509 pubkey pkcs1 pem
+
+    }
+}
+
+```
+
+### Important 
+- Never set logging level to 4 unless you're absolutely sure. It may leak sensitive material including keys, secrets, and raw packet data into logs.
+
+- For production, always prefer:
+    ```conf
+    ike = 1
+    esp = 1
+    cfg = 1
+    ```
+- Levels 3/4 are only suitable for debugging in a controlled & isolated environment.
+
+### Verbose logging snippets
+
+### Encryption logs
+![image](https://github.com/user-attachments/assets/3728a23c-f8c9-4ae4-b690-e5136af2e878)
+
+
+![image](https://github.com/user-attachments/assets/93db2d17-7bcf-4f4a-bc1a-d487e80eaa1a)
+
+
+![image](https://github.com/user-attachments/assets/76bc1775-88c3-48e4-b47c-be6b3be067b7)
+
+
+### IPSec Interface
+
+![image](https://github.com/user-attachments/assets/2985236d-de66-4deb-bfc9-8f63dc6791f0)
+
+### Config & Connection
+
+![image](https://github.com/user-attachments/assets/97e5d9fd-6436-44fb-908d-516dccca5a59)
+
+The above image shows:
+  - Use of several Diffie-Hellman Groups: **MODP_2048, MODP_3072, MODP_4096, MODP_8192, MODP_6144**
+  - Presence of AEADs such as **AES-GCM, AES-CCM (CTR + CMAC), ChaCha20Poly1305 **
+  - Use of legacy ciphers & PRFs.
+  - Use of PRF over KDF (slightly pedantic)
+  - No **SHA-3**.
+  - Use of nistp curves, brainpool curves, Curve25519 & Curve448.
+
+
+
+
+## References
 
 - [Identity Parsing](https://docs.strongswan.org/docs/latest/config/identityParsing.html)
 - [Peer config issue](https://github.com/strongswan/strongswan/discussions/799)
