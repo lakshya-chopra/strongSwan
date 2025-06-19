@@ -39,7 +39,7 @@ Note: if other services of strongSwan are running beside this (for example: star
 
 ## Configuration
 
-### Certain parameters
+### Core Parameters	
 - local_ts:
 
   `"Comma-separated list of local traffic selectors to include in CHILD_SA. Each selector is a CIDR subnet definition, followed by an optional proto/port selector. The special value dynamic may be used instead of a subnet definition, which gets replaced by the tunnel outer address or the virtual IP if negotiated. This is the default."
@@ -59,10 +59,11 @@ Note: if other services of strongSwan are running beside this (for example: star
 
 - cacert: `"The certificates may use a relative path from the swanctl/x509ca directory or an absolute path"` For other certificates, `/etc/swanctl/x509` dir maybe used.
 - Private keys should be stored at `/etc/swanctl/private`.
+- Post Quantum PSKs - PPKs, can also be used. Add the key in the secrets subsection and set the ```ppk_required=yes```.
   
+### Listing certificates:
 ![image](https://github.com/user-attachments/assets/f9b125bd-b617-45fb-a11f-15ff9e3d0b46)
 
-- Post Quantum PSKs - PPKs, can also be used. Add the key in the secrets subsection and set the ```ppk_required=yes```.
 ### 
 
 ## Client & Server config
