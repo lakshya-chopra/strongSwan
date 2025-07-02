@@ -153,6 +153,7 @@ As an example,
 charon {
     filelog {
 
+        charon{
             path =  /var/log/charon.log
             append = yes # append to the file, instead of overwriting original data
 
@@ -168,7 +169,7 @@ charon {
             enc = 4
             time_format = %b %e %T # add a formatted Timestamp before the formatted log messages
         }
-
+  }
     # Plugins
     load = aes sha1 sha2 md5 des hmac gmp random nonce x509 pubkey pkcs1 pem
 
