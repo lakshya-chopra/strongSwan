@@ -12,4 +12,8 @@ cd strongswan-6.0.0/
 --enable-eap-dynamic --enable-eap-tls --enable-updown --enable-sha2 \
 --enable-pkcs11 --enable-hmac --enable-gcm --enable-hmac --enable-ml
 
-make -j && sudo make install                                                                                                                            sudo systemctl enable strongswan.service
+make -j && sudo make install                                                                                                                            
+
+sudo systemctl daemon-reload
+sudo systemctl enable strongswan.service
+sudo systemctl start strongswan.service
