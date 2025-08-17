@@ -191,6 +191,8 @@ charon {
 
 ### Verbose logging snippets
 
+For full file, check this: [./log/charon.log](https://github.com/lakshya-chopra/strongSwan/blob/main/log/charon.log)
+
 ### Encryption logs
 ![image](https://github.com/user-attachments/assets/3728a23c-f8c9-4ae4-b690-e5136af2e878)
 
